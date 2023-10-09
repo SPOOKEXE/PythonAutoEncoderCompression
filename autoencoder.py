@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -7,6 +9,8 @@ from sklearn.model_selection import train_test_split
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
 # https://www.tensorflow.org/tutorials/generative/autoencoder
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 class NumberVectorGenerator:
 
@@ -60,7 +64,7 @@ x_test = x_test.astype('float32') / 255
 history = autoencoder.fit(
 	x_train,
 	x_train,
-	epochs=1,
+	epochs=4,
 	shuffle=True,
 	batch_size=64,
 	validation_data=(x_test, x_test),
@@ -70,25 +74,25 @@ history = autoencoder.fit(
 encoded_imgs = autoencoder.encoder(x_test).numpy()
 decoded_imgs = autoencoder.decoder(encoded_imgs).numpy()
 
-# n = 10
-# plt.figure(figsize=(20, 4))
-# for i in range(n):
-# 	# display original
-# 	ax = plt.subplot(2, n, i + 1)
-# 	plt.imshow(x_test[i])
-# 	plt.title("original")
-# 	plt.gray()
-# 	ax.get_xaxis().set_visible(False)
-# 	ax.get_yaxis().set_visible(False)
+n = 10
+plt.figure(figsize=(20, 4))
+for i in range(n):
+	# display original
+	ax = plt.subplot(2, n, i + 1)
+	plt.imshow(x_test[i])
+	plt.title("original")
+	plt.gray()
+	ax.get_xaxis().set_visible(False)
+	ax.get_yaxis().set_visible(False)
 
-# 	# display reconstruction
-# 	ax = plt.subplot(2, n, i + 1 + n)
-# 	plt.imshow(decoded_imgs[i])
-# 	plt.title("reconstructed")
-# 	plt.gray()
-# 	ax.get_xaxis().set_visible(False)
-# 	ax.get_yaxis().set_visible(False)
-# plt.show()
+	# display reconstruction
+	ax = plt.subplot(2, n, i + 1 + n)
+	plt.imshow(decoded_imgs[i])
+	plt.title("reconstructed")
+	plt.gray()
+	ax.get_xaxis().set_visible(False)
+	ax.get_yaxis().set_visible(False)
+plt.show()
 
 plt.plot(history.history["loss"], label="Training Loss")
 plt.plot(history.history["val_loss"], label="Validation Loss")
